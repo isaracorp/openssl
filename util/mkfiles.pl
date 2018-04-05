@@ -64,10 +64,12 @@ my @dirs = (
 "crypto/whrlpool",
 "crypto/ts",
 "crypto/srp",
+"crypto/hss",
 "ssl",
 "apps",
 "engines",
 "engines/ccgost",
+"engines/qs_sig",
 "test",
 "tools"
 );

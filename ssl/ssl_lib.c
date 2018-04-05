@@ -2324,6 +2324,11 @@ void ssl_set_cert_masks(CERT *c, const SSL_CIPHER *cipher)
         mask_a |= SSL_aGOST94;
     }
 
+    cpk = &(c->pkeys[SSL_PKEY_HSS]);
+    if (cpk->x509 != NULL && cpk->privatekey != NULL) {
+        mask_a |= SSL_aHSS;
+    }
+
     if (rsa_enc || (rsa_tmp && rsa_sign))
         mask_k |= SSL_kRSA;
     if (rsa_enc_export || (rsa_tmp_export && (rsa_sign || rsa_enc)))
@@ -2588,16 +2593,22 @@ EVP_PKEY *ssl_get_sign_pkey(SSL *s, const SSL_CIPHER *cipher,
 #endif
 
     if ((alg_a & SSL_aDSS) &&
-            (c->pkeys[SSL_PKEY_DSA_SIGN].privatekey != NULL))
+            (c->pkeys[SSL_PKEY_DSA_SIGN].privatekey != NULL)) {
         idx = SSL_PKEY_DSA_SIGN;
-    else if (alg_a & SSL_aRSA) {
-        if (c->pkeys[SSL_PKEY_RSA_SIGN].privatekey != NULL)
+    } else if (alg_a & SSL_aRSA) {
+        if (c->pkeys[SSL_PKEY_RSA_SIGN].privatekey != NULL) {
             idx = SSL_PKEY_RSA_SIGN;
-        else if (c->pkeys[SSL_PKEY_RSA_ENC].privatekey != NULL)
+        } else if (c->pkeys[SSL_PKEY_RSA_ENC].privatekey != NULL) {
             idx = SSL_PKEY_RSA_ENC;
+        }
     } else if ((alg_a & SSL_aECDSA) &&
-               (c->pkeys[SSL_PKEY_ECC].privatekey != NULL))
+               (c->pkeys[SSL_PKEY_ECC].privatekey != NULL)) {
         idx = SSL_PKEY_ECC;
+    } else if ((alg_a & SSL_aHSS) &&
+               (c->pkeys[SSL_PKEY_HSS].privatekey != NULL)) {
+        idx = SSL_PKEY_HSS;
+    }
+
     if (idx == -1) {
         SSLerr(SSL_F_SSL_GET_SIGN_PKEY, ERR_R_INTERNAL_ERROR);
         return (NULL);

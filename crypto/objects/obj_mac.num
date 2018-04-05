@@ -955,3 +955,12 @@ ct_cert_scts		954
 jurisdictionLocalityName		955
 jurisdictionStateOrProvinceName		956
 jurisdictionCountryName		957
+itu_t_identified_org_etsi		958
+etsi_identified_org		959
+ISARA		960
+ISARA_Algorithms		961
+ISARA_misc		962
+ISARA_demos		963
+HSS		964
+hss		965
+hss_with_SHA512		966

@@ -1003,6 +1003,12 @@ static int tls1_check_cert_param(SSL *s, X509 *x, int set_ee_md)
 #  define tlsext_sigalg_dsa(md) md, TLSEXT_signature_dsa,
 # endif
 
+# ifdef OPENSSL_NO_HSS
+#  define tlsext_sigalg_hss(md) /* */
+# else
+#  define tlsext_sigalg_hss(md) md, TLSEXT_signature_hss,
+# endif
+
 # ifdef OPENSSL_NO_ECDSA
 #  define tlsext_sigalg_ecdsa(md)
                                 /* */
@@ -1026,6 +1032,9 @@ static unsigned char tls12_sigalgs[] = {
 # endif
 # ifndef OPENSSL_NO_SHA
         tlsext_sigalg(TLSEXT_hash_sha1)
+# endif
+# ifndef OPENSSL_NO_SHA512
+        tlsext_sigalg_hss(TLSEXT_hash_sha512)
 # endif
 };
 
@@ -1157,7 +1166,7 @@ void ssl_set_client_disabled(SSL *s)
     CERT *c = s->cert;
     const unsigned char *sigalgs;
     size_t i, sigalgslen;
-    int have_rsa = 0, have_dsa = 0, have_ecdsa = 0;
+    int have_rsa = 0, have_dsa = 0, have_ecdsa = 0, have_hss = 0;
     c->mask_a = 0;
     c->mask_k = 0;
     /* Don't allow TLS 1.2 only ciphers if we don't suppport them */
@@ -1187,6 +1196,11 @@ void ssl_set_client_disabled(SSL *s)
             have_ecdsa = 1;
             break;
 # endif
+# ifndef OPENSSL_NO_HSS
+        case TLSEXT_signature_hss:
+            have_hss = 1;
+            break;
+# endif
         }
     }
     /*
@@ -1200,6 +1214,9 @@ void ssl_set_client_disabled(SSL *s)
     if (!have_dsa) {
         c->mask_a |= SSL_aDSS;
         c->mask_k |= SSL_kDHd;
+    }
+    if (!have_hss) {
+        c->mask_a |= SSL_aHSS;
     }
     if (!have_ecdsa) {
         c->mask_a |= SSL_aECDSA;
@@ -3647,7 +3664,8 @@ static tls12_lookup tls12_md[] = {
 static tls12_lookup tls12_sig[] = {
     {EVP_PKEY_RSA, TLSEXT_signature_rsa},
     {EVP_PKEY_DSA, TLSEXT_signature_dsa},
-    {EVP_PKEY_EC, TLSEXT_signature_ecdsa}
+    {EVP_PKEY_EC, TLSEXT_signature_ecdsa},
+    {EVP_PKEY_HSS, TLSEXT_signature_hss}
 };
 
 static int tls12_find_id(int nid, tls12_lookup *table, size_t tlen)
@@ -3743,6 +3761,10 @@ static int tls12_get_pkey_idx(unsigned char sig_alg)
 # ifndef OPENSSL_NO_ECDSA
     case TLSEXT_signature_ecdsa:
         return SSL_PKEY_ECC;
+# endif
+# ifndef OPENSSL_NO_HSS
+    case TLSEXT_signature_hss:
+        return SSL_PKEY_HSS;
 # endif
     }
     return -1;
@@ -3949,6 +3971,10 @@ int tls1_process_sigalgs(SSL *s)
 # ifndef OPENSSL_NO_ECDSA
         if (!c->pkeys[SSL_PKEY_ECC].digest)
             c->pkeys[SSL_PKEY_ECC].digest = EVP_sha1();
+# endif
+# ifndef OPENSSL_NO_HSS
+        if (!c->pkeys[SSL_PKEY_HSS].digest)
+            c->pkeys[SSL_PKEY_HSS].digest = EVP_sha512();
 # endif
     }
     return 1;
@@ -4186,6 +4212,8 @@ static int sig_cb(const char *elem, int len, void *arg)
         sig_alg = EVP_PKEY_RSA;
     else if (!strcmp(etmp, "DSA"))
         sig_alg = EVP_PKEY_DSA;
+    else if (!strcmp(etmp, "HSS"))
+        sig_alg = EVP_PKEY_HSS;
     else if (!strcmp(etmp, "ECDSA"))
         sig_alg = EVP_PKEY_EC;
     else
@@ -4395,6 +4423,11 @@ int tls1_check_chain(SSL *s, X509 *x, EVP_PKEY *pk, STACK_OF(X509) *chain,
                 default_nid = NID_ecdsa_with_SHA1;
                 break;
 
+            case SSL_PKEY_HSS:
+                rsign = TLSEXT_signature_hss;
+                default_nid = NID_hss;
+                break;
+
             default:
                 default_nid = -1;
                 break;
@@ -4472,6 +4505,9 @@ int tls1_check_chain(SSL *s, X509 *x, EVP_PKEY *pk, STACK_OF(X509) *chain,
             break;
         case EVP_PKEY_EC:
             check_type = TLS_CT_ECDSA_SIGN;
+            break;
+        case EVP_PKEY_HSS:
+            check_type = TLS_CT_HSS_SIGN;
             break;
         case EVP_PKEY_DH:
         case EVP_PKEY_DHX:
@@ -4565,6 +4601,7 @@ void tls1_set_cert_validity(SSL *s)
     tls1_check_chain(s, NULL, NULL, NULL, SSL_PKEY_DH_RSA);
     tls1_check_chain(s, NULL, NULL, NULL, SSL_PKEY_DH_DSA);
     tls1_check_chain(s, NULL, NULL, NULL, SSL_PKEY_ECC);
+    tls1_check_chain(s, NULL, NULL, NULL, SSL_PKEY_HSS);
 }
 
 /* User level utiity function to check a chain is suitable */

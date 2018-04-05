@@ -74,6 +74,9 @@
 # include <openssl/dh.h>
 #endif
 
+#ifndef OPENSSL_NO_HSS
+# include <openssl/hss.h>
+#endif
 #ifndef OPENSSL_NO_ENGINE
 # include <openssl/engine.h>
 #endif
@@ -309,6 +312,26 @@ DSA *EVP_PKEY_get1_DSA(EVP_PKEY *pkey)
     }
     DSA_up_ref(pkey->pkey.dsa);
     return pkey->pkey.dsa;
+}
+#endif
+
+#ifndef OPENSSL_NO_HSS
+int EVP_PKEY_set1_HSS(EVP_PKEY *pkey, HSS *key)
+{
+    int ret = EVP_PKEY_assign_HSS(pkey, key);
+    if (ret)
+        HSS_up_ref(key);
+    return ret;
+}
+
+HSS *EVP_PKEY_get1_HSS(EVP_PKEY *pkey)
+{
+    if (pkey->type != EVP_PKEY_HSS) {
+        EVPerr(EVP_F_EVP_PKEY_GET1_HSS, EVP_R_EXPECTING_AN_HSS_KEY);
+        return NULL;
+    }
+    HSS_up_ref(pkey->pkey.hss);
+    return pkey->pkey.hss;
 }
 #endif
 

@@ -1623,6 +1623,12 @@ int MAIN(int argc, char *argv[])
             ERR_print_errors(bio_err);
             goto end;
         }
+        if (s_key->type == EVP_PKEY_HSS) {
+            if (!set_hss_pkey_filename(s_key, s_key_file)) {
+                ERR_print_errors(bio_err);
+                goto end;
+            }
+        }
 
         s_cert = load_cert(bio_err, s_cert_file, s_cert_format,
                            NULL, e, "server certificate file");

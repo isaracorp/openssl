@@ -125,6 +125,9 @@
 #ifndef OPENSSL_NO_DH
 # include <openssl/dh.h>
 #endif
+#ifndef OPENSSL_NO_HSS
+# include <openssl/hss.h>
+#endif
 
 #ifndef OPENSSL_NO_RSA
 static RSA *pkey_get_rsa(EVP_PKEY *key, RSA **rsa);
@@ -330,6 +333,49 @@ DSA *PEM_read_DSAPrivateKey(FILE *fp, DSA **dsa, pem_password_cb *cb, void *u)
 
 IMPLEMENT_PEM_rw_const(DSAparams, DSA, PEM_STRING_DSAPARAMS, DSAparams)
 #endif
+
+#ifndef OPENSSL_NO_HSS
+static HSS *pkey_get_hss(EVP_PKEY *key, HSS **hss)
+{
+    HSS *ltmp;
+    if (!key)
+        return NULL;
+    ltmp = EVP_PKEY_get1_HSS(key);
+    EVP_PKEY_free(key);
+    if (!ltmp)
+        return NULL;
+    if (hss) {
+        HSS_free(*hss);
+        *hss = ltmp;
+    }
+    return ltmp;
+}
+
+HSS *PEM_read_bio_HSSPrivateKey(BIO *bp, HSS **hss, pem_password_cb *cb,
+                                void *u)
+{
+    EVP_PKEY *pktmp;
+    pktmp = PEM_read_bio_PrivateKey(bp, NULL, cb, u);
+    return pkey_get_hss(pktmp, hss); /* will free pktmp */
+}
+
+IMPLEMENT_PEM_write_cb_const(HSSPrivateKey, HSS, PEM_STRING_HSS,
+                             HSSPrivateKey)
+
+    IMPLEMENT_PEM_rw(HSS_PUBKEY, HSS, PEM_STRING_PUBLIC, HSS_PUBKEY)
+# ifndef OPENSSL_NO_FP_API
+HSS *PEM_read_HSSPrivateKey(FILE *fp, HSS **hss, pem_password_cb *cb, void *u)
+{
+    EVP_PKEY *pktmp;
+    pktmp = PEM_read_PrivateKey(fp, NULL, cb, u);
+    return pkey_get_hss(pktmp, hss); /* will free pktmp */
+}
+
+# endif
+
+IMPLEMENT_PEM_rw_const(HSSparams, HSS, PEM_STRING_HSSPARAMS, HSSparams)
+#endif
+
 #ifndef OPENSSL_NO_EC
 static EC_KEY *pkey_get_eckey(EVP_PKEY *key, EC_KEY **eckey)
 {

@@ -70,6 +70,9 @@
 #ifndef OPENSSL_NO_DSA
 # include <openssl/dsa.h>
 #endif
+#ifndef OPENSSL_NO_HSS
+# include <openssl/hss.h>
+#endif
 
 int X509_verify(X509 *a, EVP_PKEY *r)
 {
@@ -351,6 +354,50 @@ int i2d_DSA_PUBKEY_bio(BIO *bp, DSA *dsa)
     return ASN1_i2d_bio_of(DSA, i2d_DSA_PUBKEY, bp, dsa);
 }
 
+#endif
+
+#ifndef OPENSSL_NO_HSS
+# ifndef OPENSSL_NO_FP_API
+HSS *d2i_HSSPrivateKey_fp(FILE *fp, HSS **hss)
+{
+    return ASN1_d2i_fp_of(HSS, HSS_new, d2i_HSSPrivateKey, fp, hss);
+}
+
+int i2d_HSSPrivateKey_fp(FILE *fp, HSS *hss)
+{
+    return ASN1_i2d_fp_of_const(HSS, i2d_HSSPrivateKey, fp, hss);
+}
+
+HSS *d2i_HSS_PUBKEY_fp(FILE *fp, HSS **hss)
+{
+    return ASN1_d2i_fp_of(HSS, HSS_new, d2i_HSS_PUBKEY, fp, hss);
+}
+
+int i2d_HSS_PUBKEY_fp(FILE *fp, HSS *hss)
+{
+    return ASN1_i2d_fp_of(HSS, i2d_HSS_PUBKEY, fp, hss);
+}
+# endif
+
+HSS *d2i_HSSPrivateKey_bio(BIO *bp, HSS **hss)
+{
+    return ASN1_d2i_bio_of(HSS, HSS_new, d2i_HSSPrivateKey, bp, hss);
+}
+
+int i2d_HSSPrivateKey_bio(BIO *bp, HSS *hss)
+{
+    return ASN1_i2d_bio_of_const(HSS, i2d_HSSPrivateKey, bp, hss);
+}
+
+HSS *d2i_HSS_PUBKEY_bio(BIO *bp, HSS **hss)
+{
+    return ASN1_d2i_bio_of(HSS, HSS_new, d2i_HSS_PUBKEY, bp, hss);
+}
+
+int i2d_HSS_PUBKEY_bio(BIO *bp, HSS *hss)
+{
+    return ASN1_i2d_bio_of(HSS, i2d_HSS_PUBKEY, bp, hss);
+}
 #endif
 
 #ifndef OPENSSL_NO_EC

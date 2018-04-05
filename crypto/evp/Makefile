@@ -698,14 +698,15 @@ p_lib.o: ../../include/openssl/dsa.h ../../include/openssl/e_os2.h
 p_lib.o: ../../include/openssl/ec.h ../../include/openssl/ecdh.h
 p_lib.o: ../../include/openssl/ecdsa.h ../../include/openssl/engine.h
 p_lib.o: ../../include/openssl/err.h ../../include/openssl/evp.h
-p_lib.o: ../../include/openssl/lhash.h ../../include/openssl/obj_mac.h
-p_lib.o: ../../include/openssl/objects.h ../../include/openssl/opensslconf.h
-p_lib.o: ../../include/openssl/opensslv.h ../../include/openssl/ossl_typ.h
-p_lib.o: ../../include/openssl/pkcs7.h ../../include/openssl/rsa.h
-p_lib.o: ../../include/openssl/safestack.h ../../include/openssl/sha.h
-p_lib.o: ../../include/openssl/stack.h ../../include/openssl/symhacks.h
-p_lib.o: ../../include/openssl/x509.h ../../include/openssl/x509_vfy.h
-p_lib.o: ../asn1/asn1_locl.h ../cryptlib.h p_lib.c
+p_lib.o: ../../include/openssl/hss.h ../../include/openssl/lhash.h
+p_lib.o: ../../include/openssl/obj_mac.h ../../include/openssl/objects.h
+p_lib.o: ../../include/openssl/opensslconf.h ../../include/openssl/opensslv.h
+p_lib.o: ../../include/openssl/ossl_typ.h ../../include/openssl/pkcs7.h
+p_lib.o: ../../include/openssl/rsa.h ../../include/openssl/safestack.h
+p_lib.o: ../../include/openssl/sha.h ../../include/openssl/stack.h
+p_lib.o: ../../include/openssl/symhacks.h ../../include/openssl/x509.h
+p_lib.o: ../../include/openssl/x509_vfy.h ../asn1/asn1_locl.h ../cryptlib.h
+p_lib.o: p_lib.c
 p_open.o: ../../e_os.h ../../include/openssl/asn1.h ../../include/openssl/bio.h
 p_open.o: ../../include/openssl/buffer.h ../../include/openssl/crypto.h
 p_open.o: ../../include/openssl/e_os2.h ../../include/openssl/ec.h

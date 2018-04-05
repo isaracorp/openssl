@@ -162,6 +162,9 @@
 #ifndef OPENSSL_NO_DH
 # include <openssl/dh.h>
 #endif
+#ifndef OPENSSL_NO_HSS
+# include <openssl/hss.h>
+#endif
 #include <openssl/bn.h>
 #ifndef OPENSSL_NO_ENGINE
 # include <openssl/engine.h>
@@ -1920,6 +1923,10 @@ int ssl3_get_key_exchange(SSL *s)
                 X509_get_pubkey(s->session->
                                 sess_cert->peer_pkeys[SSL_PKEY_RSA_ENC].x509);
 # endif
+# ifndef OPENSSL_NO_HSS
+        else if (alg_a & SSL_aHSS)
+            pkey = X509_get_pubkey(s->session->sess_cert->peer_pkeys[SSL_PKEY_HSS].x509);
+# endif
 # ifndef OPENSSL_NO_ECDSA
         else if (alg_a & SSL_aECDSA)
             pkey =
@@ -2286,10 +2293,12 @@ int ssl3_get_new_session_ticket(SSL *s)
     unsigned char *d;
     unsigned long ticket_lifetime_hint;
 
+    /* Increase message size to 65280 (0xFF00), which is the maximum size of
+     * session ticket sent by the server, in order to accommodate peer QS certificate. */
     n = s->method->ssl_get_message(s,
                                    SSL3_ST_CR_SESSION_TICKET_A,
                                    SSL3_ST_CR_SESSION_TICKET_B,
-                                   SSL3_MT_NEWSESSION_TICKET, 16384, &ok);
+                                   SSL3_MT_NEWSESSION_TICKET, 65280, &ok);
 
     if (!ok)
         return ((int)n);
@@ -3330,6 +3339,17 @@ int ssl3_send_client_verify(SSL *s)
             n = j + 2;
         } else
 #endif
+#ifndef OPENSSL_NO_HSS
+        if (pkey->type == EVP_PKEY_HSS) {
+            if (EVP_PKEY_sign(pctx, &(p[2]), (size_t *)&j, &(data[MD5_DIGEST_LENGTH]), SHA_DIGEST_LENGTH) <= 0) {
+                SSLerr(SSL_F_SSL3_SEND_CLIENT_VERIFY, ERR_R_EVP_LIB);
+                goto err;
+            }
+
+            s2n(j, p);
+            n = j + 2;
+        } else
+#endif
 #ifndef OPENSSL_NO_ECDSA
         if (pkey->type == EVP_PKEY_EC) {
             if (!ECDSA_sign(pkey->save_type,
@@ -3579,6 +3599,14 @@ int ssl3_check_cert_and_algorithm(SSL *s)
         goto f_err;
     }
 #endif
+#ifndef OPENSSL_NO_HSS
+    else if ((alg_a & SSL_aHSS) && !has_bits(i, EVP_PK_HSS | EVP_PKT_SIGN)) {
+        SSLerr(SSL_F_SSL3_CHECK_CERT_AND_ALGORITHM,
+               SSL_R_MISSING_HSS_SIGNING_CERT);
+        goto f_err;
+    }
+#endif
+
 #ifndef OPENSSL_NO_RSA
     if (alg_k & SSL_kRSA) {
         if (!SSL_C_IS_EXPORT(s->s3->tmp.new_cipher) &&

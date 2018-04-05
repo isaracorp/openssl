@@ -62,12 +62,12 @@
  * [including the GNU Public Licence.]
  */
 
-#define NUM_NID 958
-#define NUM_SN 951
-#define NUM_LN 951
-#define NUM_OBJ 890
+#define NUM_NID 967
+#define NUM_SN 960
+#define NUM_LN 960
+#define NUM_OBJ 899
 
-static const unsigned char lvalues[6255]={
+static const unsigned char lvalues[6316]={
 0x2A,0x86,0x48,0x86,0xF7,0x0D,               /* [  0] OBJ_rsadsi */
 0x2A,0x86,0x48,0x86,0xF7,0x0D,0x01,          /* [  6] OBJ_pkcs */
 0x2A,0x86,0x48,0x86,0xF7,0x0D,0x02,0x02,     /* [ 13] OBJ_md2 */
@@ -952,6 +952,15 @@ static const unsigned char lvalues[6255]={
 0x2B,0x06,0x01,0x04,0x01,0x82,0x37,0x3C,0x02,0x01,0x01,/* [6221] OBJ_jurisdictionLocalityName */
 0x2B,0x06,0x01,0x04,0x01,0x82,0x37,0x3C,0x02,0x01,0x02,/* [6232] OBJ_jurisdictionStateOrProvinceName */
 0x2B,0x06,0x01,0x04,0x01,0x82,0x37,0x3C,0x02,0x01,0x03,/* [6243] OBJ_jurisdictionCountryName */
+0x04,0x00,                                   /* [6254] OBJ_itu_t_identified_org_etsi */
+0x04,0x00,0x7F,0x00,                         /* [6256] OBJ_etsi_identified_org */
+0x04,0x00,0x7F,0x00,0x0F,                    /* [6260] OBJ_ISARA */
+0x04,0x00,0x7F,0x00,0x0F,0x01,               /* [6265] OBJ_ISARA_Algorithms */
+0x04,0x00,0x7F,0x00,0x0F,0x01,0x03,          /* [6271] OBJ_ISARA_misc */
+0x04,0x00,0x7F,0x00,0x0F,0x01,0x03,0x01,     /* [6278] OBJ_ISARA_demos */
+0x04,0x00,0x7F,0x00,0x0F,0x01,0x03,0x01,0x01,/* [6286] OBJ_HSS */
+0x04,0x00,0x7F,0x00,0x0F,0x01,0x03,0x01,0x01,0x00,/* [6295] OBJ_hss */
+0x04,0x00,0x7F,0x00,0x0F,0x01,0x03,0x01,0x01,0x01,/* [6305] OBJ_hss_with_SHA512 */
 };
 
 static const ASN1_OBJECT nid_objs[NUM_NID]={
@@ -2514,6 +2523,20 @@ static const ASN1_OBJECT nid_objs[NUM_NID]={
 	NID_jurisdictionStateOrProvinceName,11,&(lvalues[6232]),0},
 {"jurisdictionC","jurisdictionCountryName",
 	NID_jurisdictionCountryName,11,&(lvalues[6243]),0},
+{"itu-t_identified-org_etsi","itu-t_identified-org_etsi",
+	NID_itu_t_identified_org_etsi,2,&(lvalues[6254]),0},
+{"etsi-identified-org","etsi-identified-org",NID_etsi_identified_org,
+	4,&(lvalues[6256]),0},
+{"ISARA","ISARA",NID_ISARA,5,&(lvalues[6260]),0},
+{"ISARA-Algorithms","ISARA-Algorithms",NID_ISARA_Algorithms,6,
+	&(lvalues[6265]),0},
+{"ISARA-misc","ISARA-misc",NID_ISARA_misc,7,&(lvalues[6271]),0},
+{"ISARA-demos","ISARA-demos",NID_ISARA_demos,8,&(lvalues[6278]),0},
+{"HSS","HSS",NID_HSS,9,&(lvalues[6286]),0},
+{"key-id-hss","Leighton-Micali Hierarchical Signature System",NID_hss,
+	10,&(lvalues[6295]),0},
+{"hss-with-SHA512","hss-with-SHA512",NID_hss_with_SHA512,10,
+	&(lvalues[6305]),0},
 };
 
 static const unsigned int sn_objs[NUM_SN]={
@@ -2609,11 +2632,16 @@ static const unsigned int sn_objs[NUM_SN]={
 855,	/* "HMAC" */
 780,	/* "HMAC-MD5" */
 781,	/* "HMAC-SHA1" */
+964,	/* "HSS" */
 381,	/* "IANA" */
 34,	/* "IDEA-CBC" */
 35,	/* "IDEA-CFB" */
 36,	/* "IDEA-ECB" */
 46,	/* "IDEA-OFB" */
+960,	/* "ISARA" */
+961,	/* "ISARA-Algorithms" */
+963,	/* "ISARA-demos" */
+962,	/* "ISARA-misc" */
 181,	/* "ISO" */
 183,	/* "ISO-US" */
 645,	/* "ITU-T" */
@@ -2845,6 +2873,7 @@ static const unsigned int sn_objs[NUM_SN]={
 132,	/* "emailProtection" */
 885,	/* "enhancedSearchGuide" */
 389,	/* "enterprises" */
+959,	/* "etsi-identified-org" */
 384,	/* "experimental" */
 172,	/* "extReq" */
 56,	/* "extendedCertificateAttributes" */
@@ -2878,6 +2907,7 @@ static const unsigned int sn_objs[NUM_SN]={
 473,	/* "homeTelephoneNumber" */
 466,	/* "host" */
 889,	/* "houseIdentifier" */
+966,	/* "hss-with-SHA512" */
 442,	/* "iA5StringSyntax" */
 783,	/* "id-DHBasedMac" */
 824,	/* "id-Gost28147-89-CryptoPro-A-ParamSet" */
@@ -3127,10 +3157,12 @@ static const unsigned int sn_objs[NUM_SN]={
 296,	/* "ipsecUser" */
 86,	/* "issuerAltName" */
 770,	/* "issuingDistributionPoint" */
+958,	/* "itu-t_identified-org_etsi" */
 492,	/* "janetMailbox" */
 957,	/* "jurisdictionC" */
 955,	/* "jurisdictionL" */
 956,	/* "jurisdictionST" */
+965,	/* "key-id-hss" */
 150,	/* "keyBag" */
 83,	/* "keyUsage" */
 477,	/* "lastModifiedBy" */
@@ -3511,6 +3543,7 @@ static const unsigned int ln_objs[NUM_LN]={
 852,	/* "GOST R 34.11-94 with GOST R 34.10-94 Cryptocom" */
 854,	/* "GOST R 3410-2001 Parameter Set Cryptocom" */
 810,	/* "HMAC GOST 34.11-94" */
+964,	/* "HSS" */
 432,	/* "Hold Instruction Call Issuer" */
 430,	/* "Hold Instruction Code" */
 431,	/* "Hold Instruction None" */
@@ -3519,12 +3552,17 @@ static const unsigned int ln_objs[NUM_LN]={
 294,	/* "IPSec End System" */
 295,	/* "IPSec Tunnel" */
 296,	/* "IPSec User" */
+960,	/* "ISARA" */
+961,	/* "ISARA-Algorithms" */
+963,	/* "ISARA-demos" */
+962,	/* "ISARA-misc" */
 182,	/* "ISO Member Body" */
 183,	/* "ISO US Member Body" */
 667,	/* "Independent" */
 665,	/* "Inherit all" */
 647,	/* "International Organizations" */
 142,	/* "Invalidity Date" */
+965,	/* "Leighton-Micali Hierarchical Signature System" */
 504,	/* "MIME MHS" */
 388,	/* "Mail" */
 383,	/* "Management" */
@@ -3815,6 +3853,7 @@ static const unsigned int ln_objs[NUM_LN]={
 48,	/* "emailAddress" */
 632,	/* "encrypted track 2" */
 885,	/* "enhancedSearchGuide" */
+959,	/* "etsi-identified-org" */
 56,	/* "extendedCertificateAttributes" */
 867,	/* "facsimileTelephoneNumber" */
 462,	/* "favouriteDrink" */
@@ -3839,6 +3878,7 @@ static const unsigned int ln_objs[NUM_LN]={
 473,	/* "homeTelephoneNumber" */
 466,	/* "host" */
 889,	/* "houseIdentifier" */
+966,	/* "hss-with-SHA512" */
 442,	/* "iA5StringSyntax" */
 381,	/* "iana" */
 824,	/* "id-Gost28147-89-CryptoPro-A-ParamSet" */
@@ -4066,6 +4106,7 @@ static const unsigned int ln_objs[NUM_LN]={
 181,	/* "iso" */
 623,	/* "issuer capabilities" */
 645,	/* "itu-t" */
+958,	/* "itu-t_identified-org_etsi" */
 492,	/* "janetMailbox" */
 646,	/* "joint-iso-itu-t" */
 957,	/* "jurisdictionCountryName" */
@@ -4437,6 +4478,7 @@ static const unsigned int obj_objs[NUM_OBJ]={
 676,	/* OBJ_identified_organization      1 3 */
 11,	/* OBJ_X500                         2 5 */
 647,	/* OBJ_international_organizations  2 23 */
+958,	/* OBJ_itu_t_identified_org_etsi    0 4 0 */
 380,	/* OBJ_dod                          1 3 6 */
 12,	/* OBJ_X509                         2 5 4 */
 378,	/* OBJ_X500algorithms               2 5 8 */
@@ -4534,6 +4576,7 @@ static const unsigned int obj_objs[NUM_OBJ]={
 517,	/* OBJ_set_certExt                  2 23 42 7 */
 518,	/* OBJ_set_brand                    2 23 42 8 */
 679,	/* OBJ_wap_wsg                      2 23 43 1 */
+959,	/* OBJ_etsi_identified_org          0 4 0 127 0 */
 382,	/* OBJ_Directory                    1 3 6 1 1 */
 383,	/* OBJ_Management                   1 3 6 1 2 */
 384,	/* OBJ_Experimental                 1 3 6 1 3 */
@@ -4659,6 +4702,7 @@ static const unsigned int obj_objs[NUM_OBJ]={
 637,	/* OBJ_set_brand_Diners             2 23 42 8 30 */
 638,	/* OBJ_set_brand_AmericanExpress    2 23 42 8 34 */
 639,	/* OBJ_set_brand_JCB                2 23 42 8 35 */
+960,	/* OBJ_ISARA                        0 4 0 127 0 15 */
 805,	/* OBJ_cryptopro                    1 2 643 2 2 */
 806,	/* OBJ_cryptocom                    1 2 643 2 9 */
 184,	/* OBJ_X9_57                        1 2 840 10040 */
@@ -4731,6 +4775,7 @@ static const unsigned int obj_objs[NUM_OBJ]={
 743,	/* OBJ_wap_wsg_idm_ecid_wtls10      2 23 43 1 4 10 */
 744,	/* OBJ_wap_wsg_idm_ecid_wtls11      2 23 43 1 4 11 */
 745,	/* OBJ_wap_wsg_idm_ecid_wtls12      2 23 43 1 4 12 */
+961,	/* OBJ_ISARA_Algorithms             0 4 0 127 0 15 1 */
 804,	/* OBJ_whirlpool                    1 0 10118 3 0 55 */
 124,	/* OBJ_rle_compression              1 1 1 1 666 1 */
 773,	/* OBJ_kisa                         1 2 410 200004 */
@@ -4764,6 +4809,7 @@ static const unsigned int obj_objs[NUM_OBJ]={
 633,	/* OBJ_setAttr_T2cleartxt           2 23 42 3 3 4 2 */
 634,	/* OBJ_setAttr_TokICCsig            2 23 42 3 3 5 1 */
 635,	/* OBJ_setAttr_SecDevSig            2 23 42 3 3 5 2 */
+962,	/* OBJ_ISARA_misc                   0 4 0 127 0 15 1 3 */
 436,	/* OBJ_ucl                          0 9 2342 19200300 */
 820,	/* OBJ_id_Gost28147_89_None_KeyMeshing 1 2 643 2 2 14 0 */
 819,	/* OBJ_id_Gost28147_89_CryptoPro_KeyMeshing 1 2 643 2 2 14 1 */
@@ -4835,6 +4881,7 @@ static const unsigned int obj_objs[NUM_OBJ]={
 756,	/* OBJ_camellia_256_ecb             0 3 4401 5 3 1 9 41 */
 768,	/* OBJ_camellia_256_ofb128          0 3 4401 5 3 1 9 43 */
 759,	/* OBJ_camellia_256_cfb128          0 3 4401 5 3 1 9 44 */
+963,	/* OBJ_ISARA_demos                  0 4 0 127 0 15 1 3 1 */
 437,	/* OBJ_pilot                        0 9 2342 19200300 100 */
 776,	/* OBJ_seed_ecb                     1 2 410 200004 1 3 */
 777,	/* OBJ_seed_cbc                     1 2 410 200004 1 4 */
@@ -5009,6 +5056,7 @@ static const unsigned int obj_objs[NUM_OBJ]={
 781,	/* OBJ_hmac_sha1                    1 3 6 1 5 5 8 1 2 */
 58,	/* OBJ_netscape_cert_extension      2 16 840 1 113730 1 */
 59,	/* OBJ_netscape_data_type           2 16 840 1 113730 2 */
+964,	/* OBJ_HSS                          0 4 0 127 0 15 1 3 1 1 */
 438,	/* OBJ_pilotAttributeType           0 9 2342 19200300 100 1 */
 439,	/* OBJ_pilotAttributeSyntax         0 9 2342 19200300 100 3 */
 440,	/* OBJ_pilotObjectClass             0 9 2342 19200300 100 4 */
@@ -5143,6 +5191,8 @@ static const unsigned int obj_objs[NUM_OBJ]={
 78,	/* OBJ_netscape_comment             2 16 840 1 113730 1 13 */
 79,	/* OBJ_netscape_cert_sequence       2 16 840 1 113730 2 5 */
 139,	/* OBJ_ns_sgc                       2 16 840 1 113730 4 1 */
+965,	/* OBJ_hss                          0 4 0 127 0 15 1 3 1 1 0 */
+966,	/* OBJ_hss_with_SHA512              0 4 0 127 0 15 1 3 1 1 1 */
 458,	/* OBJ_userId                       0 9 2342 19200300 100 1 1 */
 459,	/* OBJ_textEncodedORAddress         0 9 2342 19200300 100 1 2 */
 460,	/* OBJ_rfc822Mailbox                0 9 2342 19200300 100 1 3 */

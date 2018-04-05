@@ -2888,6 +2888,24 @@ OPENSSL_GLOBAL SSL_CIPHER ssl3_ciphers[] = {
 
 #endif                          /* OPENSSL_NO_ECDH */
 
+#ifndef OPENSSL_NO_HSS
+    /* Cipher EE01 */
+    {
+     1,
+     TLS1_TXT_ECDHE_HSS_WITH_AES_256_GCM_SHA384,
+     TLS1_CK_ECDHE_HSS_WITH_AES_256_GCM_SHA384,
+     SSL_kEECDH,
+     SSL_aHSS,
+     SSL_AES256GCM,
+     SSL_AEAD,
+     SSL_TLSV1_2,
+     SSL_NOT_EXP | SSL_HIGH,
+     SSL_HANDSHAKE_MAC_SHA384 | TLS1_PRF_SHA384,
+     256,
+     256,
+    },
+#endif
+
 #ifdef TEMP_GOST_TLS
 /* Cipher FF00 */
     {
@@ -4228,6 +4246,9 @@ int ssl3_get_req_cert_type(SSL *s, unsigned char *p)
 #ifndef OPENSSL_NO_ECDSA
     int have_ecdsa_sign = 0;
 #endif
+#ifndef OPENSSL_NO_HSS
+    int have_hss_sign = 0;
+#endif
     int nostrict = 1;
     unsigned long alg_k;
 
@@ -4249,6 +4270,11 @@ int ssl3_get_req_cert_type(SSL *s, unsigned char *p)
         case TLSEXT_signature_dsa:
             have_dsa_sign = 1;
             break;
+#ifndef OPENSSL_NO_HSS
+         case TLSEXT_signature_hss:
+            have_hss_sign = 1;
+            break; 
+#endif
 #ifndef OPENSSL_NO_ECDSA
         case TLSEXT_signature_ecdsa:
             have_ecdsa_sign = 1;
@@ -4265,6 +4291,14 @@ int ssl3_get_req_cert_type(SSL *s, unsigned char *p)
             p[ret++] = TLS_CT_GOST94_SIGN;
             p[ret++] = TLS_CT_GOST01_SIGN;
             return (ret);
+        }
+    }
+#endif
+
+#ifndef OPENSSL_NO_HSS
+    if (s->version >= TLS1_2_VERSION) {
+        if (have_hss_sign) {
+            p[ret++] = TLS_CT_HSS_SIGN;
         }
     }
 #endif

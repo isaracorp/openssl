@@ -239,9 +239,15 @@ int MAIN(int argc, char **argv)
 
     if (do_param)
         rv = PEM_write_bio_Parameters(out, pkey);
-    else if (outformat == FORMAT_PEM)
+    else if (outformat == FORMAT_PEM) {
+#ifndef OPENSSL_NO_HSS
+        if (pkey->type == NID_hss && pass != NULL) {
+            BIO_printf(bio_err, "HSS keys cannot be encrypted with a password due to statefulness\n");
+            goto end;
+        }
+#endif
         rv = PEM_write_bio_PrivateKey(out, pkey, cipher, NULL, 0, NULL, pass);
-    else if (outformat == FORMAT_ASN1)
+    } else if (outformat == FORMAT_ASN1)
         rv = i2d_PrivateKey_bio(out, pkey);
     else {
         BIO_printf(bio_err, "Bad format specified for key\n");

@@ -2823,6 +2823,43 @@
 #define NID_hold_instruction_reject             433
 #define OBJ_hold_instruction_reject             OBJ_holdInstruction,3L
 
+#define SN_itu_t_identified_org_etsi            "itu-t_identified-org_etsi"
+#define NID_itu_t_identified_org_etsi           958
+#define OBJ_itu_t_identified_org_etsi           OBJ_itu_t,4L,0L
+
+#define SN_etsi_identified_org          "etsi-identified-org"
+#define NID_etsi_identified_org         959
+#define OBJ_etsi_identified_org         OBJ_itu_t_identified_org_etsi,127L,0L
+
+#define SN_ISARA                "ISARA"
+#define NID_ISARA               960
+#define OBJ_ISARA               OBJ_etsi_identified_org,15L
+
+#define SN_ISARA_Algorithms             "ISARA-Algorithms"
+#define NID_ISARA_Algorithms            961
+#define OBJ_ISARA_Algorithms            OBJ_ISARA,1L
+
+#define SN_ISARA_misc           "ISARA-misc"
+#define NID_ISARA_misc          962
+#define OBJ_ISARA_misc          OBJ_ISARA_Algorithms,3L
+
+#define SN_ISARA_demos          "ISARA-demos"
+#define NID_ISARA_demos         963
+#define OBJ_ISARA_demos         OBJ_ISARA_misc,1L
+
+#define SN_HSS          "HSS"
+#define NID_HSS         964
+#define OBJ_HSS         OBJ_ISARA_demos,1L
+
+#define SN_hss          "key-id-hss"
+#define LN_hss          "Leighton-Micali Hierarchical Signature System"
+#define NID_hss         965
+#define OBJ_hss         OBJ_HSS,0L
+
+#define SN_hss_with_SHA512              "hss-with-SHA512"
+#define NID_hss_with_SHA512             966
+#define OBJ_hss_with_SHA512             OBJ_HSS,1L
+
 #define SN_data         "data"
 #define NID_data                434
 #define OBJ_data                OBJ_itu_t,9L

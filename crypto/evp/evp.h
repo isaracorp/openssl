@@ -103,6 +103,8 @@
 # define EVP_PKS_RSA     0x0100
 # define EVP_PKS_DSA     0x0200
 # define EVP_PKS_EC      0x0400
+# define EVP_PK_HSS      0x0800
+# define EVP_PKS_HSS     0x1000
 
 # define EVP_PKEY_NONE   NID_undef
 # define EVP_PKEY_RSA    NID_rsaEncryption
@@ -117,6 +119,7 @@
 # define EVP_PKEY_EC     NID_X9_62_id_ecPublicKey
 # define EVP_PKEY_HMAC   NID_hmac
 # define EVP_PKEY_CMAC   NID_cmac
+# define EVP_PKEY_HSS    NID_hss
 
 #ifdef  __cplusplus
 extern "C" {
@@ -145,6 +148,9 @@ struct evp_pkey_st {
 # endif
 # ifndef OPENSSL_NO_EC
         struct ec_key_st *ec;   /* ECC */
+# endif
+# ifndef OPENSSL_NO_HSS
+        struct hss_st *hss;     /* HSS */
 # endif
     } pkey;
     int save_parameters;
@@ -495,6 +501,11 @@ typedef int (EVP_PBE_KEYGEN) (EVP_CIPHER_CTX *ctx, const char *pass,
 # ifndef OPENSSL_NO_DSA
 #  define EVP_PKEY_assign_DSA(pkey,dsa) EVP_PKEY_assign((pkey),EVP_PKEY_DSA,\
                                         (char *)(dsa))
+# endif
+
+# ifndef OPENSSL_NO_HSS
+#  define EVP_PKEY_assign_HSS(pkey,hss) EVP_PKEY_assign((pkey),EVP_PKEY_HSS,\
+                                        (char *)(hss))
 # endif
 
 # ifndef OPENSSL_NO_DH
@@ -965,6 +976,11 @@ struct rsa_st *EVP_PKEY_get1_RSA(EVP_PKEY *pkey);
 struct dsa_st;
 int EVP_PKEY_set1_DSA(EVP_PKEY *pkey, struct dsa_st *key);
 struct dsa_st *EVP_PKEY_get1_DSA(EVP_PKEY *pkey);
+# endif
+# ifndef OPENSSL_NO_HSS
+struct hss_st;
+int EVP_PKEY_set1_HSS(EVP_PKEY *pkey, struct hss_st *key);
+struct hss_st *EVP_PKEY_get1_HSS(EVP_PKEY *pkey);
 # endif
 # ifndef OPENSSL_NO_DH
 struct dh_st;
@@ -1517,6 +1533,7 @@ void ERR_load_EVP_strings(void);
 # define EVP_F_EVP_PKEY_GET1_DSA                          120
 # define EVP_F_EVP_PKEY_GET1_ECDSA                        130
 # define EVP_F_EVP_PKEY_GET1_EC_KEY                       131
+# define EVP_F_EVP_PKEY_GET1_HSS                          180
 # define EVP_F_EVP_PKEY_GET1_RSA                          121
 # define EVP_F_EVP_PKEY_KEYGEN                            146
 # define EVP_F_EVP_PKEY_KEYGEN_INIT                       147
@@ -1572,6 +1589,7 @@ void ERR_load_EVP_strings(void);
 # define EVP_R_ERROR_LOADING_SECTION                      165
 # define EVP_R_ERROR_SETTING_FIPS_MODE                    166
 # define EVP_R_EVP_PBE_CIPHERINIT_ERROR                   119
+# define EVP_R_EXPECTING_AN_HSS_KEY                       172
 # define EVP_R_EXPECTING_AN_RSA_KEY                       127
 # define EVP_R_EXPECTING_A_DH_KEY                         128
 # define EVP_R_EXPECTING_A_DSA_KEY                        129

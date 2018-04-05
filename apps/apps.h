@@ -384,6 +384,10 @@ int raw_write_stdout(const void *, int);
 # define TM_STOP         1
 double app_tminterval(int stop, int usertime);
 
+# ifndef OPENSSL_NO_HSS
+int set_hss_pkey_filename(EVP_PKEY *pkey, const char *filename);
+# endif
+
 # define OPENSSL_NO_SSL_INTERN
 
 #endif

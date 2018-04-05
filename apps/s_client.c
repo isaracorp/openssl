@@ -1214,6 +1214,12 @@ int MAIN(int argc, char **argv)
             goto end;
         }
 
+        if (key->type == EVP_PKEY_HSS) {
+            if (!set_hss_pkey_filename(key, key_file)) {
+                ERR_print_errors(bio_err);
+                goto end;
+            }
+        }
     }
 
     if (cert_file) {

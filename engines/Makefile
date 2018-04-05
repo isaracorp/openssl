@@ -9,7 +9,7 @@ INCLUDES= -I../include
 CFLAG=-g
 MAKEFILE=	Makefile
 AR=		ar r
-ENGDIRS= ccgost
+ENGDIRS= ccgost qs_sig
 
 RECURSIVE_MAKE=	[ -z "$(ENGDIRS)" ] || for i in $(ENGDIRS) ; do \
 		    (cd $$i && echo "making $$target in $(DIR)/$$i..." && \
@@ -139,6 +139,7 @@ errors:
 			-nostatic -staticloader -write e_$$l.c; \
 	done
 	(cd ccgost; $(MAKE) PERL=$(PERL) errors)
+	(cd qs_sig; $(MAKE) PERL=$(PERL) errors)
 
 tests:
 

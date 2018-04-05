@@ -338,6 +338,8 @@
 # define SSL_aGOST01                     0x00000200L
 /* SRP auth */
 # define SSL_aSRP                0x00000400L
+/* HSS auth */
+# define SSL_aHSS                0x00000800L
 
 /* Bits for algorithm_enc (symmetric encryption) */
 # define SSL_DES                 0x00000001L
@@ -507,7 +509,8 @@
 # define SSL_PKEY_ECC            5
 # define SSL_PKEY_GOST94         6
 # define SSL_PKEY_GOST01         7
-# define SSL_PKEY_NUM            8
+# define SSL_PKEY_HSS            8
+# define SSL_PKEY_NUM            9
 
 /*-
  * SSL_kRSA <- RSA_ENC | (RSA_TMP & RSA_SIGN) |

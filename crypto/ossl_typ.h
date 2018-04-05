@@ -143,6 +143,8 @@ typedef struct dh_method DH_METHOD;
 typedef struct dsa_st DSA;
 typedef struct dsa_method DSA_METHOD;
 
+typedef struct hss_st HSS;
+
 typedef struct rsa_st RSA;
 typedef struct rsa_meth_st RSA_METHOD;
 

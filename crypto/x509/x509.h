@@ -101,6 +101,9 @@
 #  ifndef OPENSSL_NO_DH
 #   include <openssl/dh.h>
 #  endif
+#  ifndef OPENSSL_NO_HSS
+#   include <openssl/hss.h>
+#  endif
 # endif
 
 # ifndef OPENSSL_NO_SHA
@@ -687,6 +690,12 @@ int i2d_DSA_PUBKEY_fp(FILE *fp, DSA *dsa);
 DSA *d2i_DSAPrivateKey_fp(FILE *fp, DSA **dsa);
 int i2d_DSAPrivateKey_fp(FILE *fp, DSA *dsa);
 #  endif
+#  ifndef OPENSSL_NO_HSS
+HSS *d2i_HSS_PUBKEY_fp(FILE *fp, HSS **hss);
+int i2d_HSS_PUBKEY_fp(FILE *fp, HSS *hss);
+HSS *d2i_HSSPrivateKey_fp(FILE *fp, HSS **hss);
+int i2d_HSSPrivateKey_fp(FILE *fp, HSS *hss);
+#  endif
 #  ifndef OPENSSL_NO_EC
 EC_KEY *d2i_EC_PUBKEY_fp(FILE *fp, EC_KEY **eckey);
 int i2d_EC_PUBKEY_fp(FILE *fp, EC_KEY *eckey);
@@ -725,6 +734,12 @@ DSA *d2i_DSA_PUBKEY_bio(BIO *bp, DSA **dsa);
 int i2d_DSA_PUBKEY_bio(BIO *bp, DSA *dsa);
 DSA *d2i_DSAPrivateKey_bio(BIO *bp, DSA **dsa);
 int i2d_DSAPrivateKey_bio(BIO *bp, DSA *dsa);
+#  endif
+#  ifndef OPENSSL_NO_HSS
+HSS *d2i_HSS_PUBKEY_bio(BIO *bp, HSS **hss);
+int i2d_HSS_PUBKEY_bio(BIO *bp, HSS *hss);
+HSS *d2i_HSSPrivateKey_bio(BIO *bp, HSS **hss);
+int i2d_HSSPrivateKey_bio(BIO *bp, HSS *hss);
 #  endif
 #  ifndef OPENSSL_NO_EC
 EC_KEY *d2i_EC_PUBKEY_bio(BIO *bp, EC_KEY **eckey);
@@ -796,6 +811,10 @@ RSA *d2i_RSA_PUBKEY(RSA **a, const unsigned char **pp, long length);
 # ifndef OPENSSL_NO_DSA
 int i2d_DSA_PUBKEY(DSA *a, unsigned char **pp);
 DSA *d2i_DSA_PUBKEY(DSA **a, const unsigned char **pp, long length);
+# endif
+# ifndef OPENSSL_NO_HSS
+int i2d_HSS_PUBKEY(HSS *a, unsigned char **pp);
+HSS *d2i_HSS_PUBKEY(HSS **a, const unsigned char **pp, long length);
 # endif
 # ifndef OPENSSL_NO_EC
 int i2d_EC_PUBKEY(EC_KEY *a, unsigned char **pp);

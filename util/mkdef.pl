@@ -86,6 +86,7 @@ my @known_algorithms = ( "RC2", "RC4", "RC5", "IDEA", "DES", "BF",
 			 "SHA256", "SHA512", "RIPEMD",
 			 "MDC2", "WHIRLPOOL", "RSA", "DSA", "DH", "EC", "ECDH", "ECDSA", "EC2M",
 			 "HMAC", "AES", "CAMELLIA", "SEED", "GOST",
+			 "HSS",
 			 # EC_NISTP_64_GCC_128
 			 "EC_NISTP_64_GCC_128",
 			 # Envelope "algorithms"
@@ -356,6 +357,7 @@ $crypto.=" crypto/cms/cms.h";
 $crypto.=" crypto/jpake/jpake.h";
 $crypto.=" crypto/modes/modes.h";
 $crypto.=" crypto/srp/srp.h";
+$crypto.=" crypto/hss/hss.h";
 
 my $symhacks="crypto/symhacks.h";
 

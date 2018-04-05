@@ -195,6 +195,9 @@ void ssl_cert_set_default_md(CERT *cert)
 #ifndef OPENSSL_NO_ECDSA
     cert->pkeys[SSL_PKEY_ECC].digest = EVP_sha1();
 #endif
+#ifndef OPENSSL_NO_HSS
+    cert->pkeys[SSL_PKEY_HSS].digest = EVP_sha512();
+#endif
 }
 
 CERT *ssl_cert_new(void)

@@ -926,6 +926,30 @@ holdInstruction 3	: holdInstructionReject	: Hold Instruction Reject
 
 # OID's from ITU-T.  Most of this is defined in RFC 1274.  A couple of
 # them are also mentioned in RFC 2247
+
+# ====== ISARA Addition Begin ======
+
+itu-t 4 0                           : itu-t_identified-org_etsi
+
+itu-t_identified-org_etsi 127 0     : etsi-identified-org
+
+etsi-identified-org 15              : ISARA
+
+ISARA 1                             : ISARA-Algorithms
+
+ISARA-Algorithms 3                  : ISARA-misc
+
+ISARA-misc 1                        : ISARA-demos
+
+ISARA-demos 1                       : HSS
+
+!Cname hss
+HSS 0                               : key-id-hss       : Leighton-Micali Hierarchical Signature System
+!Cname hss-with-SHA512
+HSS 1                               : hss-with-SHA512
+
+# ======= ISARA Addition End =======
+
 itu-t 9			: data
 data 2342		: pss
 pss 19200300		: ucl

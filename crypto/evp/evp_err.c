@@ -1,6 +1,6 @@
 /* crypto/evp/evp_err.c */
 /* ====================================================================
- * Copyright (c) 1999-2016 The OpenSSL Project.  All rights reserved.
+ * Copyright (c) 1999-2018 The OpenSSL Project.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -120,6 +120,7 @@ static ERR_STRING_DATA EVP_str_functs[] = {
     {ERR_FUNC(EVP_F_EVP_PKEY_GET1_DSA), "EVP_PKEY_get1_DSA"},
     {ERR_FUNC(EVP_F_EVP_PKEY_GET1_ECDSA), "EVP_PKEY_GET1_ECDSA"},
     {ERR_FUNC(EVP_F_EVP_PKEY_GET1_EC_KEY), "EVP_PKEY_get1_EC_KEY"},
+    {ERR_FUNC(EVP_F_EVP_PKEY_GET1_HSS), "EVP_PKEY_get1_HSS"},
     {ERR_FUNC(EVP_F_EVP_PKEY_GET1_RSA), "EVP_PKEY_get1_RSA"},
     {ERR_FUNC(EVP_F_EVP_PKEY_KEYGEN), "EVP_PKEY_keygen"},
     {ERR_FUNC(EVP_F_EVP_PKEY_KEYGEN_INIT), "EVP_PKEY_keygen_init"},
@@ -182,6 +183,7 @@ static ERR_STRING_DATA EVP_str_reasons[] = {
     {ERR_REASON(EVP_R_ERROR_LOADING_SECTION), "error loading section"},
     {ERR_REASON(EVP_R_ERROR_SETTING_FIPS_MODE), "error setting fips mode"},
     {ERR_REASON(EVP_R_EVP_PBE_CIPHERINIT_ERROR), "evp pbe cipherinit error"},
+    {ERR_REASON(EVP_R_EXPECTING_AN_HSS_KEY), "expecting an hss key"},
     {ERR_REASON(EVP_R_EXPECTING_AN_RSA_KEY), "expecting an rsa key"},
     {ERR_REASON(EVP_R_EXPECTING_A_DH_KEY), "expecting a dh key"},
     {ERR_REASON(EVP_R_EXPECTING_A_DSA_KEY), "expecting a dsa key"},

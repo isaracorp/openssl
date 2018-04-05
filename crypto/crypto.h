@@ -225,7 +225,8 @@ typedef struct openssl_item_st {
 # define CRYPTO_LOCK_COMP                38
 # define CRYPTO_LOCK_FIPS                39
 # define CRYPTO_LOCK_FIPS2               40
-# define CRYPTO_NUM_LOCKS                41
+# define CRYPTO_LOCK_HSS                 41
+# define CRYPTO_NUM_LOCKS                42
 
 # define CRYPTO_LOCK             1
 # define CRYPTO_UNLOCK           2
@@ -332,6 +333,7 @@ DECLARE_STACK_OF(CRYPTO_EX_DATA_FUNCS)
 # define CRYPTO_EX_INDEX_ECDH            13
 # define CRYPTO_EX_INDEX_COMP            14
 # define CRYPTO_EX_INDEX_STORE           15
+# define CRYPTO_EX_INDEX_HSS             16
 
 /*
  * Dynamically assigned indexes start from this value (don't use directly,

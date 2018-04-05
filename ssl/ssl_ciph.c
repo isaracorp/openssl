@@ -270,6 +270,7 @@ static const SSL_CIPHER cipher_aliases[] = {
     {0, SSL_TXT_aRSA, 0, 0, SSL_aRSA, 0, 0, 0, 0, 0, 0, 0},
     {0, SSL_TXT_aDSS, 0, 0, SSL_aDSS, 0, 0, 0, 0, 0, 0, 0},
     {0, SSL_TXT_DSS, 0, 0, SSL_aDSS, 0, 0, 0, 0, 0, 0, 0},
+    {0, SSL_TXT_HSS, 0, 0, SSL_aHSS, 0, 0, 0, 0, 0, 0, 0},
     {0, SSL_TXT_aKRB5, 0, 0, SSL_aKRB5, 0, 0, 0, 0, 0, 0, 0},
     {0, SSL_TXT_aNULL, 0, 0, SSL_aNULL, 0, 0, 0, 0, 0, 0, 0},
     /* no such ciphersuites supported! */
@@ -1573,6 +1574,12 @@ STACK_OF(SSL_CIPHER) *ssl_create_cipher_list(const SSL_METHOD *ssl_method, STACK
         return NULL;
     }
 
+    /* Set the quantum safe ciphersuites to lower priority. */
+#ifndef OPENSSL_NO_HSS
+    ssl_cipher_apply_rule(0, SSL_kEECDH, SSL_aHSS, 0, 0, 0, 0,
+                          CIPHER_ORD, -1, &head, &tail);
+#endif
+
     /* Now disable everything (maintaining the ordering!) */
     ssl_cipher_apply_rule(0, 0, 0, 0, 0, 0, 0, CIPHER_DEL, -1, &head, &tail);
 
@@ -1774,6 +1781,9 @@ char *SSL_CIPHER_description(const SSL_CIPHER *cipher, char *buf, int len)
         break;
     case SSL_aGOST01:
         au = "GOST01";
+        break;
+    case SSL_aHSS:
+        au = "HSS";
         break;
     default:
         au = "unknown";
@@ -2075,6 +2085,8 @@ int ssl_cipher_get_cert_index(const SSL_CIPHER *c)
         return SSL_PKEY_GOST94;
     else if (alg_a & SSL_aGOST01)
         return SSL_PKEY_GOST01;
+    else if (alg_a & SSL_aHSS)
+        return SSL_PKEY_HSS;
     return -1;
 }
 

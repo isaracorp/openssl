@@ -611,6 +611,18 @@ int MAIN(int argc, char **argv)
                 ERR_clear_error();
             app_RAND_load_file(randfile, bio_err, 0);
         }
+#ifndef OPENSSL_NO_HSS
+        if (pkey->type == NID_hss) {
+            if (passin != NULL) {
+                BIO_printf(bio_err, "Encrypted HSS keys not yet supported due to statefulness.\n");
+                goto end;
+            }
+            if (!set_hss_pkey_filename(pkey, keyfile)) {
+                BIO_printf(bio_err, "Couldn't set HSS private key file.\n");
+                goto end;
+            }
+        }
+#endif
     }
 
     if (newreq && (pkey == NULL)) {
@@ -710,7 +722,30 @@ int MAIN(int argc, char **argv)
         if (nodes)
             cipher = NULL;
 
+#ifndef OPENSSL_NO_HSS
+        if (keyout != NULL && pkey->type == NID_hss) {
+            if (cipher != NULL) {
+               BIO_printf(bio_err, "Encrypted HSS keys not yet supported due to statefulness.\n");
+               goto end;
+            }
+            if ((outfile != NULL) && (strcmp(outfile, keyout) == 0)) {
+               BIO_printf(bio_err, "Private HSS key must be saved to its own file due to statefulness.\n");
+               goto end;
+            }
+            if (!set_hss_pkey_filename(pkey, keyout)) {
+                BIO_printf(bio_err, "Couldn't set HSS private key file.\n");
+                goto end;
+            }
+        }
+#endif
+
         i = 0;
+#ifndef OPENSSL_NO_HSS
+        if (pkey->type == NID_hss && passout != NULL) {
+            BIO_printf(bio_err, "HSS keys cannot be encrypted with a password due to statefulness\n");
+            goto end;
+        }
+#endif
  loop:
         if (!PEM_write_bio_PrivateKey(out, pkey, cipher,
                                       NULL, 0, NULL, passout)) {
@@ -723,6 +758,13 @@ int MAIN(int argc, char **argv)
             goto end;
         }
         BIO_printf(bio_err, "-----\n");
+#ifndef OPENSSL_NO_HSS
+        if (keyout != NULL && pkey->type == NID_hss) {
+            /* Flush the HSS private key to file because it may be overwritten
+             * when it's used to generate a signature, due to HSS statefulness. */
+            (void)BIO_flush(out);
+        }
+#endif
     }
 
     if (!newreq) {

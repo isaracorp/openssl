@@ -164,6 +164,9 @@
 #ifndef OPENSSL_NO_DH
 # include <openssl/dh.h>
 #endif
+#ifndef OPENSSL_NO_HSS
+# include <openssl/hss.h>
+#endif
 #include <openssl/bn.h>
 #ifndef OPENSSL_NO_KRB5
 # include <openssl/krb5_asn.h>
@@ -2186,6 +2189,11 @@ int ssl3_get_client_key_exchange(SSL *s)
     BN_CTX *bn_ctx = NULL;
 #endif
 
+    /*
+     * Increase the message size to 8192 bytes in order to accommodate quantum
+     * safe key exchange algorithms, such as LUKE. It also enables support for
+     * RSA key size 16384-bit as well.
+     */
     n = s->method->ssl_get_message(s,
                                    SSL3_ST_SR_KEY_EXCH_A,
                                    SSL3_ST_SR_KEY_EXCH_B,
@@ -2735,21 +2743,22 @@ int ssl3_get_client_key_exchange(SSL *s)
             i = *p;
             p += 1;
             if (n != 1 + i) {
-                SSLerr(SSL_F_SSL3_GET_CLIENT_KEY_EXCHANGE, SSL_R_LENGTH_MISMATCH);
-                al = SSL_AD_DECODE_ERROR;
-                goto f_err;
+                SSLerr(SSL_F_SSL3_GET_CLIENT_KEY_EXCHANGE, ERR_R_EC_LIB);
+                goto err;
             }
             if (EC_POINT_oct2point(group, clnt_ecpoint, p, i, bn_ctx) == 0) {
                 SSLerr(SSL_F_SSL3_GET_CLIENT_KEY_EXCHANGE, ERR_R_EC_LIB);
-                al = SSL_AD_HANDSHAKE_FAILURE;
-                goto f_err;
+                goto err;
             }
-            /*
-             * p is pointing to somewhere in the buffer currently, so set it
-             * to the start
-             */
-            p = (unsigned char *)s->init_buf->data;
+
+
         }
+
+        /*
+         * p is pointing to somewhere in the buffer currently, so set it
+         * to the start
+         */
+        p = (unsigned char *)s->init_buf->data;
 
         /* Compute the shared pre-master secret */
         field_size = EC_GROUP_get_degree(group);
@@ -3152,6 +3161,33 @@ int ssl3_get_cert_verify(SSL *s)
             /* bad signature */
             al = SSL_AD_DECRYPT_ERROR;
             SSLerr(SSL_F_SSL3_GET_CERT_VERIFY, SSL_R_BAD_DSA_SIGNATURE);
+            goto f_err;
+        }
+    } else
+#endif
+#ifndef OPENSSL_NO_HSS
+    if (pkey->type == EVP_PKEY_HSS) {
+        EVP_PKEY_CTX *pctx = EVP_PKEY_CTX_new(pkey, NULL);
+        if (pctx == NULL) {
+            al = SSL_AD_INTERNAL_ERROR;
+            SSLerr(SSL_F_SSL3_GET_CERT_VERIFY, ERR_R_MALLOC_FAILURE);
+            goto f_err;
+        }
+
+        if (EVP_PKEY_verify_init(pctx) <= 0) {
+            EVP_PKEY_CTX_free(pctx);
+            al = SSL_AD_INTERNAL_ERROR;
+            SSLerr(SSL_F_SSL3_GET_CERT_VERIFY, ERR_R_INTERNAL_ERROR);
+            goto f_err;
+        }
+
+        j = EVP_PKEY_verify(pctx, p, i, &(s->s3->tmp.cert_verify_md[MD5_DIGEST_LENGTH]), SHA_DIGEST_LENGTH);
+
+        EVP_PKEY_CTX_free(pctx);
+
+        if (j <= 0) {
+            al = SSL_AD_DECRYPT_ERROR;
+            SSLerr(SSL_F_SSL3_GET_CERT_VERIFY, SSL_R_BAD_HSS_SIGNATURE);
             goto f_err;
         }
     } else

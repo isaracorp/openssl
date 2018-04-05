@@ -912,6 +912,18 @@ int MAIN(int argc, char **argv)
                     if (Upkey == NULL)
                         goto end;
                 }
+#ifndef OPENSSL_NO_HSS
+                if (Upkey->type == NID_hss) {
+                    if (passin != NULL) {
+                       BIO_printf(bio_err, "Encrypted HSS keys not yet supported due to statefulness.\n");
+                       goto end;
+                    }
+                    if (!set_hss_pkey_filename(Upkey, keyfile)) {
+                        BIO_printf(bio_err, "Couldn't set HSS private key file.\n");
+                        goto end;
+                    }
+                }
+#endif
 
                 assert(need_rand);
                 if (!sign(x, Upkey, days, clrext, digest, extconf, extsect))
@@ -925,6 +937,18 @@ int MAIN(int argc, char **argv)
                     if (CApkey == NULL)
                         goto end;
                 }
+#ifndef OPENSSL_NO_HSS
+                if (CApkey->type == NID_hss) {
+                    if (passin != NULL) {
+                       BIO_printf(bio_err, "Encrypted HSS keys not yet supported due to statefulness.\n");
+                       goto end;
+                    }
+                    if (!set_hss_pkey_filename(CApkey, CAkeyfile)) {
+                        BIO_printf(bio_err, "Couldn't set HSS private key file.\n");
+                        goto end;
+                    }
+                }
+#endif
 
                 assert(need_rand);
                 if (!x509_certify(ctx, CAfile, digest, x, xca,
@@ -946,6 +970,18 @@ int MAIN(int argc, char **argv)
                     if (pk == NULL)
                         goto end;
                 }
+#ifndef OPENSSL_NO_HSS
+                if (pk->type == NID_hss) {
+                    if (passin != NULL) {
+                       BIO_printf(bio_err, "Encrypted HSS keys not yet supported due to statefulness.\n");
+                       goto end;
+                    }
+                    if (!set_hss_pkey_filename(pk, keyfile)) {
+                        BIO_printf(bio_err, "Couldn't set HSS private key file.\n");
+                        goto end;
+                    }
+                }
+#endif
 
                 BIO_printf(bio_err, "Generating certificate request\n");
 

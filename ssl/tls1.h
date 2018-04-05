@@ -279,8 +279,11 @@ extern "C" {
 # define TLSEXT_signature_dsa                            2
 # define TLSEXT_signature_ecdsa                          3
 
+ /* Signature and hash algorithms from ISARA */
+# define TLSEXT_signature_hss                            15
+
 /* Total number of different signature algorithms */
-# define TLSEXT_signature_num                            4
+# define TLSEXT_signature_num                            5
 
 # define TLSEXT_hash_none                                0
 # define TLSEXT_hash_md5                                 1
@@ -563,6 +566,9 @@ SSL_CTX_callback_ctrl(ssl,SSL_CTRL_SET_TLSEXT_TICKET_KEY_CB,(void (*)(void))cb)
 # define TLS1_CK_ECDH_RSA_WITH_AES_128_GCM_SHA256        0x0300C031
 # define TLS1_CK_ECDH_RSA_WITH_AES_256_GCM_SHA384        0x0300C032
 
+/* ISARA QS schemes */
+# define TLS1_CK_ECDHE_HSS_WITH_AES_256_GCM_SHA384           0x0300EE01
+
 /*
  * XXX * Backward compatibility alert: + * Older versions of OpenSSL gave
  * some DHE ciphers names with "EDH" + * instead of "DHE".  Going forward, we
@@ -713,6 +719,9 @@ SSL_CTX_callback_ctrl(ssl,SSL_CTRL_SET_TLSEXT_TICKET_KEY_CB,(void (*)(void))cb)
 # define TLS1_TXT_ECDH_RSA_WITH_AES_128_GCM_SHA256       "ECDH-RSA-AES128-GCM-SHA256"
 # define TLS1_TXT_ECDH_RSA_WITH_AES_256_GCM_SHA384       "ECDH-RSA-AES256-GCM-SHA384"
 
+/* ISARA QS Schemes */
+# define TLS1_TXT_ECDHE_HSS_WITH_AES_256_GCM_SHA384             "ECDHE-HSS-AES256-GCM-SHA384"
+
 # define TLS_CT_RSA_SIGN                 1
 # define TLS_CT_DSS_SIGN                 2
 # define TLS_CT_RSA_FIXED_DH             3
@@ -722,11 +731,13 @@ SSL_CTX_callback_ctrl(ssl,SSL_CTRL_SET_TLSEXT_TICKET_KEY_CB,(void (*)(void))cb)
 # define TLS_CT_ECDSA_FIXED_ECDH         66
 # define TLS_CT_GOST94_SIGN              21
 # define TLS_CT_GOST01_SIGN              22
+# define TLS_CT_HSS_SIGN                 32
+
 /*
  * when correcting this number, correct also SSL3_CT_NUMBER in ssl3.h (see
  * comment there)
  */
-# define TLS_CT_NUMBER                   9
+# define TLS_CT_NUMBER                   10
 
 # define TLS1_FINISH_MAC_LENGTH          12
 

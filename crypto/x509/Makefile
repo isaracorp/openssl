@@ -400,12 +400,12 @@ x_all.o: ../../include/openssl/crypto.h ../../include/openssl/dsa.h
 x_all.o: ../../include/openssl/e_os2.h ../../include/openssl/ec.h
 x_all.o: ../../include/openssl/ecdh.h ../../include/openssl/ecdsa.h
 x_all.o: ../../include/openssl/err.h ../../include/openssl/evp.h
-x_all.o: ../../include/openssl/lhash.h ../../include/openssl/obj_mac.h
-x_all.o: ../../include/openssl/objects.h ../../include/openssl/ocsp.h
-x_all.o: ../../include/openssl/opensslconf.h ../../include/openssl/opensslv.h
-x_all.o: ../../include/openssl/ossl_typ.h ../../include/openssl/pkcs7.h
-x_all.o: ../../include/openssl/rsa.h ../../include/openssl/safestack.h
-x_all.o: ../../include/openssl/sha.h ../../include/openssl/stack.h
-x_all.o: ../../include/openssl/symhacks.h ../../include/openssl/x509.h
-x_all.o: ../../include/openssl/x509_vfy.h ../../include/openssl/x509v3.h
-x_all.o: ../cryptlib.h x_all.c
+x_all.o: ../../include/openssl/hss.h ../../include/openssl/lhash.h
+x_all.o: ../../include/openssl/obj_mac.h ../../include/openssl/objects.h
+x_all.o: ../../include/openssl/ocsp.h ../../include/openssl/opensslconf.h
+x_all.o: ../../include/openssl/opensslv.h ../../include/openssl/ossl_typ.h
+x_all.o: ../../include/openssl/pkcs7.h ../../include/openssl/rsa.h
+x_all.o: ../../include/openssl/safestack.h ../../include/openssl/sha.h
+x_all.o: ../../include/openssl/stack.h ../../include/openssl/symhacks.h
+x_all.o: ../../include/openssl/x509.h ../../include/openssl/x509_vfy.h
+x_all.o: ../../include/openssl/x509v3.h ../cryptlib.h x_all.c

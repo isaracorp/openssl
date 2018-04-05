@@ -363,6 +363,18 @@ int MAIN(int argc, char **argv)
              */
             goto end;
         }
+#ifndef OPENSSL_NO_HSS
+        if (!do_verify && sigkey->type == NID_hss) {
+            if (passin != NULL) {
+               BIO_printf(bio_err, "Encrypted HSS keys not yet supported due to statefulness.\n");
+               goto end;
+            }
+            if (!set_hss_pkey_filename(sigkey, keyfile)) {
+                BIO_printf(bio_err, "Couldn't set HSS private key file.\n");
+                goto end;
+            }
+        }
+#endif
     }
 
     if (mac_name) {

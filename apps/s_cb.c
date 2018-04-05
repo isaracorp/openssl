@@ -277,6 +277,7 @@ int set_cert_key_stuff(SSL_CTX *ctx, X509 *cert, EVP_PKEY *key,
                    "Private key does not match the certificate public key\n");
         return 0;
     }
+
     if (chain && !SSL_CTX_set1_chain(ctx, chain)) {
         BIO_printf(bio_err, "error setting certificate chain\n");
         ERR_print_errors(bio_err);
@@ -337,7 +338,9 @@ static void ssl_print_client_cert_types(BIO *bio, SSL *s)
         case TLS_CT_GOST01_SIGN:
             cname = "GOST01 Sign";
             break;
-
+        case TLS_CT_HSS_SIGN:
+            cname = "HSS Sign";
+            break;
         default:
             cname = NULL;
         }
@@ -385,6 +388,8 @@ static int do_print_sigalgs(BIO *out, SSL *s, int shared)
             sstr = "RSA";
         else if (sign_nid == EVP_PKEY_DSA)
             sstr = "DSA";
+        else if (sign_nid == EVP_PKEY_HSS)
+            sstr = "HSS";
         else if (sign_nid == EVP_PKEY_EC)
             sstr = "ECDSA";
         if (sstr)

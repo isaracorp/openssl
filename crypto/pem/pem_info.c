@@ -69,6 +69,9 @@
 #ifndef OPENSSL_NO_DSA
 # include <openssl/dsa.h>
 #endif
+#ifndef OPENSSL_NO_HSS
+# include <openssl/hss.h>
+#endif
 
 #ifndef OPENSSL_NO_FP_API
 STACK_OF(X509_INFO) *PEM_X509_INFO_read(FILE *fp, STACK_OF(X509_INFO) *sk,
@@ -198,6 +201,29 @@ STACK_OF(X509_INFO) *PEM_X509_INFO_read_bio(BIO *bp, STACK_OF(X509_INFO) *sk,
             if (xi->x_pkey == NULL)
                 goto err;
             ptype = EVP_PKEY_DSA;
+            pp = &xi->x_pkey->dec_pkey;
+            if ((int)strlen(header) > 10) /* assume encrypted */
+                raw = 1;
+        } else
+#endif
+#ifndef OPENSSL_NO_HSS
+        if (strcmp(name, PEM_STRING_HSS) == 0) {
+            d2i = (D2I_OF(void)) d2i_HSSPrivateKey;
+            if (xi->x_pkey != NULL) {
+                if (!sk_X509_INFO_push(ret, xi))
+                    goto err;
+                if ((xi = X509_INFO_new()) == NULL)
+                    goto err;
+                goto start;
+            }
+
+            xi->enc_data = NULL;
+            xi->enc_len = 0;
+
+            xi->x_pkey = X509_PKEY_new();
+            if (xi->x_pkey == NULL)
+                goto err;
+            ptype = EVP_PKEY_HSS;
             pp = &xi->x_pkey->dec_pkey;
             if ((int)strlen(header) > 10) /* assume encrypted */
                 raw = 1;

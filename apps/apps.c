@@ -140,6 +140,9 @@
 #ifndef OPENSSL_NO_JPAKE
 # include <openssl/jpake.h>
 #endif
+#ifndef OPENSSL_NO_HSS
+# include <openssl/hss.h>
+#endif
 
 #define NON_MAIN
 #include "apps.h"
@@ -3281,3 +3284,24 @@ int raw_write_stdout(const void *buf, int siz)
     return write(fileno_stdout(), buf, siz);
 }
 #endif
+
+# ifndef OPENSSL_NO_HSS
+int set_hss_pkey_filename(EVP_PKEY *pkey, const char *filename)
+{
+    if (pkey == NULL || filename == NULL) {
+        return 0;
+    }
+    if (pkey->type == NID_hss) {
+        EVP_PKEY_CTX *ctx = EVP_PKEY_CTX_new(pkey, NULL);
+        if (ctx == NULL) {
+            return 0;
+        }
+        if (EVP_PKEY_CTX_ctrl_str(ctx, set_hss_private_key_file_ctrl_string, filename) <= 0) {
+            EVP_PKEY_CTX_free(ctx);
+            return 0;
+        }
+        EVP_PKEY_CTX_free(ctx);
+    }
+    return 1;
+}
+# endif
